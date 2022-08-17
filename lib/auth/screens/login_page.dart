@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:login_signup_ui_2/core/app_constant.dart';
 
 import '../../commons/mixins.dart';
+import '../../core/app_constant.dart';
 import 'sign_up_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -14,14 +14,20 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginState extends State<LoginPage> with InputValidationMixin {
-  bool _passwordVisible = false;
+  late TextEditingController emailController;
+  late TextEditingController passwordController;
   final GlobalKey<FormState> loginformKey = GlobalKey<FormState>();
-  final emailController =
-      TextEditingController(text: 'sthakrishnakumar@gmail.com');
-  final passwordController = TextEditingController(text: 'hello bro');
+  bool _passwordVisible = false;
   bool errorEmail = false;
   bool errorPass = false;
   bool isButtonPressed = false;
+
+  @override
+  void initState() {
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -74,69 +80,42 @@ class _LoginState extends State<LoginPage> with InputValidationMixin {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: Column(
                   children: [
-                    Row(
-                      children: [
-                        !errorEmail
-                            ? const Padding(
-                                padding: EdgeInsets.only(bottom: 5),
-                                child: Icon(
-                                  Icons.alternate_email_outlined,
-                                  color: Colors.grey,
-                                  size: 20,
-                                ),
-                              )
-                            : const Padding(
-                                padding: EdgeInsets.only(bottom: 50),
-                                child: Icon(
-                                  Icons.alternate_email_outlined,
-                                  color: Colors.blue,
-                                  size: 20,
-                                ),
-                              ),
-                        const SizedBox(
-                          width: 10,
+                    SizedBox(
+                      height: 50,
+                      child: TextFormField(
+                        keyboardType: TextInputType.emailAddress,
+                        style: const TextStyle(
+                          fontSize: 14,
                         ),
-                        Expanded(
-                          child: SizedBox(
-                            height: 50,
-                            child: TextFormField(
-                              keyboardType: TextInputType.emailAddress,
-                              style: const TextStyle(
-                                fontSize: 14,
-                              ),
-                              textInputAction: TextInputAction.next,
-                              controller: emailController,
-                              // ignore: body_might_complete_normally_nullable
-                              validator: (email) {
-                                if (isEmailValid(email!)) {
-                                  setState(() {
-                                    errorEmail = false;
-                                  });
-                                  return null;
-                                } else {
-                                  setState(() {
-                                    errorEmail = true;
-                                  });
-                                  return 'Enter valid Email';
-                                }
-                              },
-                              decoration: const InputDecoration(
-                                suffixIcon: SizedBox(),
-                                errorStyle: TextStyle(fontSize: 10),
-                                hintStyle: TextStyle(
-                                  fontSize: 14,
-                                ),
-                                hintText: 'Email ID',
-                              ),
-                            ),
+                        textInputAction: TextInputAction.next,
+                        controller: emailController,
+                        // ignore: body_might_complete_normally_nullable
+                        validator: (email) {
+                          if (isEmailValid(email!)) {
+                            setState(() {
+                              errorEmail = false;
+                            });
+                            return null;
+                          } else {
+                            setState(() {
+                              errorEmail = true;
+                            });
+                            return 'Enter valid Email';
+                          }
+                        },
+                        decoration: const InputDecoration(
+                          suffixIcon: SizedBox(),
+                          errorStyle: TextStyle(fontSize: 10),
+                          hintStyle: TextStyle(
+                            fontSize: 14,
                           ),
+                          hintText: 'Email ID',
                         ),
-                      ],
+                      ),
                     ),
                     const SizedBox(
                       height: 20,
                     ),
-
                     SizedBox(
                       height: 50,
                       child: TextFormField(
@@ -206,8 +185,6 @@ class _LoginState extends State<LoginPage> with InputValidationMixin {
                         ),
                       ),
                     ),
-                    //   ],
-                    // ),
                     const SizedBox(
                       height: 15,
                     ),
@@ -215,14 +192,7 @@ class _LoginState extends State<LoginPage> with InputValidationMixin {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         InkWell(
-                          onTap: () {
-                            // Navigator.push(
-                            //   context,
-                            //   CupertinoPageRoute(
-                            //     builder: (context) => const ForgotPassword(),
-                            //   ),
-                            // );
-                          },
+                          onTap: () {},
                           child: Text(
                             'Forget Password?',
                             style: TextStyle(
@@ -239,7 +209,9 @@ class _LoginState extends State<LoginPage> with InputValidationMixin {
                     isButtonPressed
                         ? const CircularProgressIndicator()
                         : InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              loginformKey.currentState!.validate();
+                            },
                             child: Container(
                               height: 50,
                               width: double.infinity,
@@ -324,3 +296,4 @@ class _LoginState extends State<LoginPage> with InputValidationMixin {
     );
   }
 }
+
