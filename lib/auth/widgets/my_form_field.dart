@@ -9,6 +9,9 @@ class MyFormField extends StatelessWidget {
     this.suffixIcon = const SizedBox(),
     required this.hintText,
     this.validator,
+    required this.icon,
+    this.obscureText = false,
+    this.isError = false,
   }) : super(key: key);
 
   final TextEditingController controller;
@@ -17,9 +20,13 @@ class MyFormField extends StatelessWidget {
   Widget suffixIcon;
   final String hintText;
   String? Function(String?)? validator;
+  final IconData icon;
+  bool obscureText;
+  bool isError;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      obscureText: obscureText,
       keyboardType: keyboardType,
       style: const TextStyle(
         fontSize: 14,
@@ -28,6 +35,10 @@ class MyFormField extends StatelessWidget {
       controller: controller,
       validator: validator,
       decoration: InputDecoration(
+        icon: Padding(
+          padding: EdgeInsets.only(bottom: isError ? 28 : 0),
+          child: Icon(icon),
+        ),
         suffixIcon: suffixIcon,
         errorStyle: const TextStyle(fontSize: 10),
         hintStyle: const TextStyle(

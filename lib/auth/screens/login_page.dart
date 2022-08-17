@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:login_signup_ui_2/auth/widgets/my_form_field.dart';
 
 import '../../commons/mixins.dart';
 import '../../core/app_constant.dart';
@@ -38,13 +38,14 @@ class _LoginState extends State<LoginPage> with InputValidationMixin {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.white,
-        statusBarBrightness: Brightness.light,
-        statusBarIconBrightness: Brightness.dark,
-      ),
-    );
+    // SystemChrome.setSystemUIOverlayStyle(
+    //   const SystemUiOverlayStyle(
+    //     statusBarColor: Colors.white,
+    //     statusBarBrightness: Brightness.light,
+    //     statusBarIconBrightness: Brightness.dark,
+    //   ),
+    // );
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -72,7 +73,7 @@ class _LoginState extends State<LoginPage> with InputValidationMixin {
               ),
             ),
             const SizedBox(
-              height: 10,
+              height: 30,
             ),
             Form(
               key: loginformKey,
@@ -82,35 +83,12 @@ class _LoginState extends State<LoginPage> with InputValidationMixin {
                   children: [
                     SizedBox(
                       height: 50,
-                      child: TextFormField(
-                        keyboardType: TextInputType.emailAddress,
-                        style: const TextStyle(
-                          fontSize: 14,
-                        ),
-                        textInputAction: TextInputAction.next,
+                      child: MyFormField(
+                        isError: errorEmail,
+                        icon: Icons.alternate_email,
                         controller: emailController,
-                        // ignore: body_might_complete_normally_nullable
-                        validator: (email) {
-                          if (isEmailValid(email!)) {
-                            setState(() {
-                              errorEmail = false;
-                            });
-                            return null;
-                          } else {
-                            setState(() {
-                              errorEmail = true;
-                            });
-                            return 'Enter valid Email';
-                          }
-                        },
-                        decoration: const InputDecoration(
-                          suffixIcon: SizedBox(),
-                          errorStyle: TextStyle(fontSize: 10),
-                          hintStyle: TextStyle(
-                            fontSize: 14,
-                          ),
-                          hintText: 'Email ID',
-                        ),
+                        validator: (email) => emailValidate(email),
+                        hintText: 'Email',
                       ),
                     ),
                     const SizedBox(
@@ -118,71 +96,14 @@ class _LoginState extends State<LoginPage> with InputValidationMixin {
                     ),
                     SizedBox(
                       height: 50,
-                      child: TextFormField(
-                        keyboardType: TextInputType.emailAddress,
-                        style: const TextStyle(
-                          fontSize: 14,
-                        ),
-                        textInputAction: TextInputAction.done,
-                        validator: (password) {
-                          if (isloginPasswordValid(password!)) {
-                            setState(() {
-                              errorPass = false;
-                            });
-                            return null;
-                          } else {
-                            setState(() {
-                              errorPass = true;
-                            });
-                            return 'Enter atleast 8 character';
-                          }
-                        },
+                      child: MyFormField(
+                        isError: errorPass,
                         controller: passwordController,
                         obscureText: !_passwordVisible,
-                        decoration: InputDecoration(
-                          icon: const Icon(Icons.headphones),
-                          errorStyle: const TextStyle(fontSize: 10),
-                          hintStyle: const TextStyle(
-                            fontSize: 14,
-                          ),
-                          hintText: 'Password',
-                          suffixIcon: !errorPass
-                              ? InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      _passwordVisible = !_passwordVisible;
-                                    });
-                                  },
-                                  child: _passwordVisible
-                                      ? const Icon(
-                                          Icons.visibility_off,
-                                          size: 20,
-                                        )
-                                      : const Icon(
-                                          Icons.visibility,
-                                          size: 20,
-                                        ),
-                                )
-                              : Padding(
-                                  padding: const EdgeInsets.only(bottom: 28),
-                                  child: InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        _passwordVisible = !_passwordVisible;
-                                      });
-                                    },
-                                    child: _passwordVisible
-                                        ? const Icon(
-                                            Icons.visibility_off,
-                                            size: 20,
-                                          )
-                                        : const Icon(
-                                            Icons.visibility,
-                                            size: 20,
-                                          ),
-                                  ),
-                                ),
-                        ),
+                        validator: (password) => passwordValidate(password),
+                        hintText: 'Password',
+                        icon: Icons.lock,
+                        suffixIcon: suffixIconWidget(),
                       ),
                     ),
                     const SizedBox(
@@ -212,24 +133,8 @@ class _LoginState extends State<LoginPage> with InputValidationMixin {
                             onTap: () {
                               loginformKey.currentState!.validate();
                             },
-                            child: Container(
-                              height: 50,
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                color: Colors.blue,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: const Center(
-                                child: Text(
-                                  'Login',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                    letterSpacing: 0.5,
-                                  ),
-                                ),
-                              ),
-                            )),
+                            child: containerWidget(),
+                          ),
                     const SizedBox(
                       height: 20,
                     ),
@@ -276,9 +181,12 @@ class _LoginState extends State<LoginPage> with InputValidationMixin {
                               ),
                             );
                           },
-                          child: const Text(
-                            '  Register',
-                            style: TextStyle(color: Colors.blue),
+                          child: const Padding(
+                            padding: EdgeInsets.only(left: 3),
+                            child: Text(
+                              'Register',
+                              style: TextStyle(color: Colors.blue),
+                            ),
                           ),
                         ),
                       ],
@@ -295,5 +203,66 @@ class _LoginState extends State<LoginPage> with InputValidationMixin {
       ),
     );
   }
-}
 
+  String? passwordValidate(password) {
+    if (isPasswordValid(password!)) {
+      setState(() {
+        errorPass = false;
+      });
+      return null;
+    } else {
+      setState(() {
+        errorPass = true;
+      });
+      return 'Enter Valid Password';
+    }
+  }
+
+  String? emailValidate(email) {
+    if (isEmailValid(email!)) {
+      setState(() {
+        errorEmail = false;
+      });
+      return null;
+    } else {
+      setState(() {
+        errorEmail = true;
+      });
+      return 'Enter Valid Email';
+    }
+  }
+
+  Container containerWidget() => Container(
+        height: 50,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.blue,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: const Center(
+          child: Text(
+            'Login',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ),
+      );
+
+  Padding suffixIconWidget() => Padding(
+        padding: EdgeInsets.only(bottom: errorPass ? 28 : 0),
+        child: InkWell(
+          onTap: () {
+            setState(() {
+              _passwordVisible = !_passwordVisible;
+            });
+          },
+          child: Icon(
+            _passwordVisible ? Icons.visibility_off : Icons.visibility,
+            size: 20,
+          ),
+        ),
+      );
+}
