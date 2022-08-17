@@ -10,4 +10,6 @@ class AppConstant {
 
   static const String signUpImage =
       "assets/images/login_signup_img/register.png";
+
+  static const List<String> gender = ['Male', 'Female'];
 }

@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:login_signup_ui_2/core/app_constant.dart';
 
+import '../../commons/mixins.dart';
+import 'sign_up_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -19,8 +22,6 @@ class _LoginState extends State<LoginPage> with InputValidationMixin {
   bool errorEmail = false;
   bool errorPass = false;
   bool isButtonPressed = false;
-
- 
 
   @override
   void dispose() {
@@ -51,7 +52,7 @@ class _LoginState extends State<LoginPage> with InputValidationMixin {
             SizedBox(
               height: 280,
               width: double.infinity,
-              child: Image.asset(AppConstant.login_ft_img),
+              child: Image.asset(AppConstant.loginImage),
             ),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
@@ -135,28 +136,7 @@ class _LoginState extends State<LoginPage> with InputValidationMixin {
                     const SizedBox(
                       height: 20,
                     ),
-                    // Row(
-                    //   children: [
-                    //     !errorPass
-                    //         ? const Padding(
-                    //             padding: EdgeInsets.only(bottom: 5),
-                    //             child: Icon(
-                    //               Icons.key_outlined,
-                    //               color: Colors.grey,
-                    //               size: 20,
-                    //             ),
-                    //           )
-                    //         : const Padding(
-                    //             padding: EdgeInsets.only(bottom: 50),
-                    //             child: Icon(
-                    //               Icons.key_outlined,
-                    //               color: Colors.blue,
-                    //               size: 20,
-                    //             ),
-                    //           ),
-                    //     const SizedBox(
-                    //       width: 10,
-                    //     ),
+
                     SizedBox(
                       height: 50,
                       child: TextFormField(
@@ -236,12 +216,12 @@ class _LoginState extends State<LoginPage> with InputValidationMixin {
                       children: [
                         InkWell(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                builder: (context) => const ForgotPassword(),
-                              ),
-                            );
+                            // Navigator.push(
+                            //   context,
+                            //   CupertinoPageRoute(
+                            //     builder: (context) => const ForgotPassword(),
+                            //   ),
+                            // );
                           },
                           child: Text(
                             'Forget Password?',
@@ -259,12 +239,14 @@ class _LoginState extends State<LoginPage> with InputValidationMixin {
                     isButtonPressed
                         ? const CircularProgressIndicator()
                         : InkWell(
-                            onTap: () {
-                              _validateForm();
-                            },
+                            onTap: () {},
                             child: Container(
                               height: 50,
                               width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: Colors.blue,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                               child: const Center(
                                 child: Text(
                                   'Login',
@@ -274,10 +256,6 @@ class _LoginState extends State<LoginPage> with InputValidationMixin {
                                     letterSpacing: 0.5,
                                   ),
                                 ),
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.blue,
-                                borderRadius: BorderRadius.circular(12),
                               ),
                             )),
                     const SizedBox(
